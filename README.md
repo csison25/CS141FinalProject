@@ -43,14 +43,17 @@ The program then calculates the grade required on the assignment to achieve the 
 
 Project Structure:
 
-  src/main/java
+  JavaFX/finalprojectfx/src/main/java
     FinalProject.java
 
   docs/
-    classDiagram.png
+    classDiagramGradeChecker.png
 
-  compiled/
-    GradeChecker.jar
+  JavaFX/finalprojectfx/compiled/
+    FinalProject-1.0-SNAPSHOT.jar
+
+  JavaFX/finalprojectfx/
+    This is where the text files will be saved to when you save something in the application 
 
 License:
   This project is licensed under the MIT license.
