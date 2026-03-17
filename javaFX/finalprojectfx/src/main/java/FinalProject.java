@@ -79,14 +79,14 @@ public class FinalProject extends Application {
 
         calcButton.setOnAction( e -> {
             try{
-            Validate userInput = new Validate (className, taskName, comboBox, currentGrade, percentWeight, wantedGrade);
-            record = performCalculation(userInput, results);
-        } catch (Exception oopsies) {
-            UserInterface.errorTextConfiguration(results);
-            results.setText(oopsies.getMessage());
-            record = null;
-        }
-        });
+                Validate userInput = new Validate (className, taskName, comboBox, currentGrade, percentWeight, wantedGrade);
+                record = performCalculation(userInput, results);
+            } catch (Exception oopsies) {
+                UserInterface.errorTextConfiguration(results);
+                results.setText(oopsies.getMessage());
+                record = null;
+            }
+            });
         saveButton.setOnAction( e -> {
             if (record != null){
                 saveToFile(record, results);
