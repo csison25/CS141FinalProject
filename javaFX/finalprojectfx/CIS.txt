@@ -1,1 +1,2 @@
 Class Type: CIS | Assignment Name: Computer Programming | Assignment Type: Quiz | Current Grade: 90.00% | Needed Grade: 84.44% | Letter Grade: B | Target Grade: 89
+Class Type: CIS | Assignment Name: Final | Assignment Type: Test | Current Grade: 95.54% | Needed Grade: 92.54% | Letter Grade: A | Target Grade: 95
