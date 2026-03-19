@@ -23,15 +23,17 @@ Technology Used:
   Maven
 
 How to Run the program:
+
   Option #1: Run with Maven
     Navigate to the project's directory in terminal
     Run this command:
       mvn clean javafx:run
-  Option #2: Run via compiled JAR
+      
+  Option #2: Run via compiled JAR, must be in terminal of folder
     Run this command:
       java -jar GradeChecker.jar
 
-Project Inputs
+Project Inputs:
   Course Name
   Assignment Type
   Assignment Nam
@@ -45,12 +47,18 @@ Project Structure:
 
   JavaFX/finalprojectfx/src/main/java
     FinalProject.java
+    Launcher.java
+    UserInterface.java
+    Validate.java
+    GradeCalculator.java
+    GradeResults.java
 
   docs/
     classDiagramGradeChecker.png
+    GradeCheckerClassRelations.png
 
   JavaFX/finalprojectfx/compiled/
-    FinalProject-1.0-SNAPSHOT.jar
+    GradeChecker.jar
 
   JavaFX/finalprojectfx/
     This is where the text files will be saved to when you save something in the application 
