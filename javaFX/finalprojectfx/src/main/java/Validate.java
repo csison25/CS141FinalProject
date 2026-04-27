@@ -1,29 +1,21 @@
-import javafx.application.*;
-import javafx.scene.*;
-import javafx.scene.control.*;
-import javafx.scene.layout.*;
-import javafx.scene.image.*;
-import javafx.scene.text.*;
-import javafx.stage.*;
-import javafx.collections.*;
-import java.io.*;
-import javafx.geometry.*;
-import java.nio.file.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 
 /*
     Class that checks for proper user input
 */
 
 class Validate {
-    private String courseName;
-    private String assignmentName;
-    private String dropMenuSelect;
-    private String userGradeString;
-    private String examWeightString;
-    private String userWantedGradeString;
+    private final String courseName;
+    private final String assignmentName;
+    private final String dropMenuSelect;
+    private final String userGradeString;
+    private final String examWeightString;
+    private final String userWantedGradeString;
 
     //method that constructs the objects with the given values
-    public Validate(TextField course, TextField assignment, ComboBox<String> drop,TextField grade, TextField exam, TextField user) {
+    public Validate(final TextField course, final TextField assignment, final ComboBox<String> drop, final TextField grade, final TextField exam, final TextField user) {
         this.courseName = course.getText().trim().toUpperCase();
         fileNameChecker(this.courseName);
         this.assignmentName = assignment.getText();
@@ -49,22 +41,22 @@ class Validate {
     }
 
     //accessor method for a value of the object
-    public Double getUserGradeString() {
+    public double getUserGradeString() {
         return Double.parseDouble(userGradeString);
     }
 
     //accessor method for a value of the object
-    public Double getExamWeightString() {
+    public double getExamWeightString() {
         return Double.parseDouble(examWeightString);
     }
 
     //accessor method for a value of the object
-    public Integer getUserWantedGradeString(){
+    public int getUserWantedGradeString(){
         return Integer.parseInt(userWantedGradeString);
     }
 
     //accessor method checks for null input by the user
-    public static boolean nullChecker(Validate input, Label results) {
+    public static boolean nullChecker(final Validate input, final Label results) {
         if( input.courseName.isEmpty() ||
             input.assignmentName.isEmpty() ||
             input.dropMenuSelect == null ||
@@ -78,7 +70,7 @@ class Validate {
     }
 
     //accessor method that checks for valid grade ranges, Ex: Cannot get more than 100% on a test
-    public static void gradeRangeChecker(double percentGrade) {
+    public static void gradeRangeChecker(final double percentGrade) {
         if (percentGrade > 100.0) {
             throw new IllegalArgumentException("Not possible with current grade, will need over 100% on final.");
         } else if (percentGrade < 0) {
@@ -87,7 +79,7 @@ class Validate {
     }
 
     //accessor method, ensures that the course name given by the user has only valid characters for file naming
-    public static void fileNameChecker(String courseName) {
+    public static void fileNameChecker(final String courseName) {
         if (!courseName.matches("[a-zA-Z0-9_-]+")) {
             throw new IllegalArgumentException("Invalid file name. Only letters, numbers, spaces, _ and - allowed.");
         }

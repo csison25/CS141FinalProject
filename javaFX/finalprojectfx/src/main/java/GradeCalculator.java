@@ -1,3 +1,5 @@
+
+
 /*
 Class that has the methods that deal with manipulating the user data, method that does the calculations
 */
@@ -5,15 +7,15 @@ Class that has the methods that deal with manipulating the user data, method tha
 public class GradeCalculator {
 
     //method for calculating a needed grade on an assignment to achieve a desired final grade
-    public static double gradeCalc(double current, double weight, int want){
-        double percentGrade = (want - ((1 - (weight / 100.0)) * current)) / (weight / 100.0);
+    public static double gradeCalc(final double current, final double weight, final int want){
+        final double percentGrade = (want - ((1 - (weight / 100.0)) * current)) / (weight / 100.0);
         Validate.gradeRangeChecker(percentGrade);
         return percentGrade;
     }
 
     //method for determining the letter grade associated to the calculated percentGrade from the method gradeCalc()
-    public static String letterCalc(double percent){
-        String letter;
+    public static String letterCalc(final double percent){
+        final String letter;
         if (percent >= 90) {
             letter = "A";
         } else if (percent >= 80) {
@@ -29,7 +31,7 @@ public class GradeCalculator {
     }
 
     //method for styling (changing color) of the Label 'results', based on pass/fail
-    public static String getPercentStyling(double percent) {
+    public static String getPercentStyling(final double percent) {
         if (percent >= 60.0) {
             return "-fx-text-fill: green;";
         } else {
