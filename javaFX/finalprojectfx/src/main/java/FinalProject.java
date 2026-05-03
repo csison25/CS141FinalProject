@@ -8,146 +8,268 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class FinalProject extends Application {
-    private GradeResults record = null;//Creation of the GradeResults object 'record' ,
+    private GradeResults record = null;
+    private ObservableList<ResultItem> results;
+    private ResultsListView resultsPanel;
+    private Label messageLabel;
+
     public static void main(String[] args) {
-        launch(args);//launches the application
+        launch(args);
     }
 
     @Override
     public void start(Stage stage) {
-        stage.getIcons().add(new Image(getClass().getResourceAsStream("/calculator.png")));//https://www.flaticon.com/free-icon/calculator_10806845?related_id=10806845&origin=search
-        stage.setTitle("Grade Checker");//title of the application
+        stage.getIcons().add(new Image(getClass().getResourceAsStream("/calculator.png")));
+        stage.setTitle("Grade Checker");
 
-        /*
-        All Labels , TextFields, Buttons , ComboBox are created using a helper method(s) in the UserInterface Class (Last class listed in the file)
-        Each item listed in start() method, have the input that go into each of the defined types, easier to edit and view information that will be displayed by the application
-        */
+        // Initialize results list and panel
+        results = FXCollections.observableArrayList();
+        resultsPanel = new ResultsListView(results);
+
+        // === LEFT PANEL: Input Controls ===
         final Label header = UserInterface.createLabel("This program checks for the a needed grade on an\nassignment \\ test \\ exam");
-
+        
         final Label headerClassName = UserInterface.createLabel("Enter the Class's Type: (e.g. CIS)");
-        final TextField className = UserInterface.createATextField("Enter Class Type");//user input
+        final TextField className = UserInterface.createATextField("Enter Class Type");
 
         final Label headerDropMenu = UserInterface.createLabel("Select Assignment Type: ");
-        final ComboBox<String> comboBox = UserInterface.createComboBox();//user input, has defined selections for the user to choose
+        final ComboBox<String> comboBox = UserInterface.createComboBox();
 
         final Label headerTaskName = UserInterface.createLabel("Enter the Assignment's Name:");
-        final TextField taskName = UserInterface.createATextField("Enter Assignment Name");//user input
+        final TextField taskName = UserInterface.createATextField("Enter Assignment Name");
 
         final Label headerCurrentGrade = UserInterface.createLabel("Enter your current Grade: (e.g. 99)");
-        final TextField currentGrade = UserInterface.createATextField("Enter current grade");//user input
+        final TextField currentGrade = UserInterface.createATextField("Enter current grade");
 
         final Label headerPercentWeight = UserInterface.createLabel("Enter weight in percent: (e.g. 18)");
-        final TextField percentWeight = UserInterface.createATextField("Enter weight in percent");//user input
+        final TextField percentWeight = UserInterface.createATextField("Enter weight in percent");
 
         final Label headerWantedGrade = UserInterface.createLabel("Enter desired final grade: (e.g. 95)");
-        final TextField wantedGrade = UserInterface.createATextField("Enter grade wanted");//user input
+        final TextField wantedGrade = UserInterface.createATextField("Enter grade wanted");
 
-        final Button calcButton = UserInterface.createButton("Calculate");//button that does the calculations of the application
-        final Button saveButton = UserInterface.createButton("Save");//button to save the calculated information to a text file
-        final Label results = UserInterface.resultsText();//Label that communicates calculated information to the user
+        final Button calcButton = UserInterface.createButton("Calculate");
+        final Button saveButton = UserInterface.createButton("Save");
+        messageLabel = UserInterface.resultsText();
 
-        final HBox buttonBox = new HBox();//allows the buttons to be next to each other rather than stacked on top one another
+        final HBox buttonBox = new HBox();
         UserInterface.configureHBoxStyling(buttonBox);
         buttonBox.getChildren().addAll(calcButton, saveButton);
-        final VBox displayOrder = new VBox();//Creates the Vertical layout of the application
-        UserInterface.configureVBoxStyling(displayOrder);
-        displayOrder.getChildren().addAll(
-              header,
-              headerClassName,
-              className,
-              headerDropMenu,
-              comboBox,
-              headerTaskName,
-              taskName,
-              headerCurrentGrade,
-              currentGrade,
-              headerPercentWeight,
-              percentWeight,
-              headerWantedGrade,
-              wantedGrade,
-              buttonBox,
-              results);
 
-        Scene scene = new Scene(displayOrder, 500,600);// Creates the scene for the application to be displayed on
+        // LEFT PANEL: VBox containing all input controls
+        final VBox inputPanel = new VBox();
+        UserInterface.configureVBoxStyling(inputPanel);
+        inputPanel.setStyle("-fx-border-color: #e0e0e0; -fx-border-width: 1;");
+        inputPanel.setPrefWidth(320);
+        inputPanel.getChildren().addAll(
+            header,
+            headerClassName,
+            className,
+            headerDropMenu,
+            comboBox,
+            headerTaskName,
+            taskName,
+            headerCurrentGrade,
+            currentGrade,
+            headerPercentWeight,
+            percentWeight,
+            headerWantedGrade,
+            wantedGrade,
+            buttonBox,
+            messageLabel
+        );
+
+        // === ROOT LAYOUT: HBox with LEFT (inputs) and RIGHT (results) ===
+        final HBox rootLayout = new HBox();
+        rootLayout.setSpacing(20);
+        rootLayout.setPadding(new Insets(30));
+        rootLayout.setAlignment(Pos.TOP_CENTER);
+        rootLayout.getChildren().addAll(inputPanel, resultsPanel);
+        HBox.setHgrow(resultsPanel, Priority.ALWAYS);
+
+        // Center the root layout
+        VBox centeredWrapper = new VBox();
+        centeredWrapper.setAlignment(Pos.TOP_CENTER);
+        centeredWrapper.getChildren().add(rootLayout);
+        VBox.setVgrow(rootLayout, Priority.ALWAYS);
+
+        Scene scene = new Scene(centeredWrapper, 900, 650);
         stage.setScene(scene);
         stage.show();
 
-        //an event set for the calcButton, Creates the Validate userInput object, which is used to check for valid inputs of user information
-        calcButton.setOnAction( e -> {
-            try{
-
-                //stores the input data from the user, object creation
-                Validate userInput = new Validate (className, taskName, comboBox, currentGrade, percentWeight, wantedGrade);
-                record = performCalculation(userInput, results);// Supplies the data that goes into the GradeResults object 'record'
-            } catch (Exception oopsies) {
-                UserInterface.errorTextConfiguration(results);//this method resets the color of the text
-                results.setText(oopsies.getMessage());
+        // === EVENT HANDLERS ===
+        
+        // Calculate Button: Add result to list (NOT to file yet)
+        calcButton.setOnAction(e -> {
+            try {
+                Validate userInput = new Validate(className, taskName, comboBox, currentGrade, percentWeight, wantedGrade);
+                record = performCalculation(userInput, messageLabel);
+                if (record != null) {
+                    results.add(new ResultItem(record));
+                    messageLabel.setText("Result added to list. Click 'Save' to persist to file.");
+                    UserInterface.errorTextConfiguration(messageLabel);
+                }
+            } catch (Exception ex) {
+                UserInterface.errorTextConfiguration(messageLabel);
+                messageLabel.setText(ex.getMessage());
                 record = null;
             }
-            });
+        });
 
-        //an event set for the saveButton, saves the data inputs of the GradeResults object 'record' to a file, uses a "toString" method called saveToFile to format the information in a string
-        saveButton.setOnAction( e -> {
-            if (record != null){
-                saveToFile(record, results);
-            }else {
-                UserInterface.errorTextConfiguration(results);
-                results.setText("Calculate a grade first!");
+        // Save Button: Persist current record to file
+        saveButton.setOnAction(e -> {
+            if (record != null) {
+                saveToFile(record, messageLabel);
+            } else {
+                UserInterface.errorTextConfiguration(messageLabel);
+                messageLabel.setText("Calculate a grade first!");
+            }
+        });
+
+        // Delete Selected Button: Remove checked items from list AND file
+        resultsPanel.getDeleteSelectedBtn().setOnAction(e -> {
+            List<ResultItem> toDelete = results.filtered(item -> item.isSelected()).stream().toList();
+            if (toDelete.isEmpty()) {
+                showInfoDialog("No Selection", "Please check items to delete.");
+                return;
+            }
+
+            for (ResultItem item : toDelete) {
+                try {
+                    ResultPersistence.deleteResultFromFile(item.getGradeResults());
+                    results.remove(item);
+                } catch (Exception ex) {
+                    showErrorDialog("Delete Failed", "Could not delete result: " + ex.getMessage());
+                }
+            }
+
+            if (!toDelete.isEmpty()) {
+                messageLabel.setText("Deleted " + toDelete.size() + " result(s) from list and file.");
+                UserInterface.errorTextConfiguration(messageLabel);
+            }
+        });
+
+        // Delete All Button: Clear list and associated files
+        resultsPanel.getDeleteAllBtn().setOnAction(e -> {
+            if (results.isEmpty()) {
+                showInfoDialog("Empty List", "No results to delete.");
+                return;
+            }
+
+            for (ResultItem item : results) {
+                try {
+                    ResultPersistence.deleteResultFromFile(item.getGradeResults());
+                } catch (Exception ex) {
+                    showErrorDialog("Delete Failed", "Could not delete result: " + ex.getMessage());
+                }
+            }
+            results.clear();
+            messageLabel.setText("All results deleted from list and files.");
+            UserInterface.errorTextConfiguration(messageLabel);
+        });
+
+        // Import Results Button: Load results from file
+        resultsPanel.getImportResultsBtn().setOnAction(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Result File to Import");
+            fileChooser.setInitialDirectory(new java.io.File(System.getProperty("user.dir")));
+            fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Text Files", "*.txt")
+            );
+
+            java.io.File selectedFile = fileChooser.showOpenDialog(stage);
+            if (selectedFile != null) {
+                try {
+                    List<GradeResults> importedResults = ResultPersistence.parseExistingResultsFile(selectedFile.getName());
+                    for (GradeResults result : importedResults) {
+                        results.add(new ResultItem(result));
+                    }
+                    messageLabel.setText("Imported " + importedResults.size() + " result(s) from " + selectedFile.getName());
+                    UserInterface.errorTextConfiguration(messageLabel);
+                } catch (Exception ex) {
+                    showErrorDialog("Import Failed", "Could not import results: " + ex.getMessage());
+                }
             }
         });
     }
 
-      //method that returns a GradeResults object, Takes the validated user input, calculates the needed grade percent and letter grade of that percent to achieve a desired final grade
-      //Change made 4/26/26: Changed the method to be private, as it is only used within the FinalProject class, and does not need to be accessed outside of it. This is an example of encapsulation, as it hides the implementation details of how the calculation is performed from other classes.
-      private static GradeResults performCalculation(Validate userInput, Label results) {
+    private static GradeResults performCalculation(Validate userInput, Label results) {
+        if (!Validate.nullChecker(userInput, results)) {
+            throw new IllegalArgumentException("Please fill all fields");
+        }
 
-          //ensures all fields are filled
-          if (!Validate.nullChecker(userInput, results)){
-              throw new IllegalArgumentException("Please fill all fields");
-          }
-          //retrieves the numeric values of the user input
-          double userGrade = userInput.getUserGradeString();
-          double examWeight = userInput.getExamWeightString();
-          int userWantedGrade = userInput.getUserWantedGradeString();
+        double userGrade = userInput.getUserGradeString();
+        double examWeight = userInput.getExamWeightString();
+        int userWantedGrade = userInput.getUserWantedGradeString();
 
-          //performs calculations
-          double grade = GradeCalculator.gradeCalc(userGrade, examWeight, userWantedGrade);//calculates the needed grade corresponding to user input
-          String letterGrade = GradeCalculator.letterCalc(grade);//calculates the letter grade associated to the needed grade on an assignment
+        double grade = GradeCalculator.gradeCalc(userGrade, examWeight, userWantedGrade);
+        String letterGrade = GradeCalculator.letterCalc(grade);
 
-          //Stores the results of the information, object creation
-          final GradeResults myResults = new GradeResults(userInput.getCourseName(), userInput.getAssignmentName(), userInput.getDropMenuSelect(), userGrade, examWeight, userWantedGrade, grade, letterGrade);
-          results.setStyle(GradeCalculator.getPercentStyling(grade));//Styling for displayed text of the resulsting calculation
-          results.setText(myResults.toString());//prints the calculation to the screen
-          return myResults;
+        final GradeResults myResults = new GradeResults(
+            userInput.getCourseName(),
+            userInput.getAssignmentName(),
+            userInput.getDropMenuSelect(),
+            userGrade,
+            examWeight,
+            userWantedGrade,
+            grade,
+            letterGrade
+        );
+        results.setStyle(GradeCalculator.getPercentStyling(grade));
+        results.setText(myResults.toString());
+        return myResults;
     }
 
-    //method used to save user input and calculations to a text file, files take the name of the course given by the user
-    public static void saveToFile(final GradeResults record, final Label results) {
+    private static void saveToFile(final GradeResults record, final Label messageLabel) {
         final String filename = record.getClassName() + ".txt";
-        try{
+        try {
             Files.writeString(
-                Paths.get(filename),record.toFile() + "\n",
+                Paths.get(filename),
+                record.toFile() + "\n",
                 StandardOpenOption.CREATE,
                 StandardOpenOption.APPEND
             );
-        UserInterface.errorTextConfiguration(results);
-        results.setText("Saved to " + filename);
-        } catch (IOException ex){
-            UserInterface.errorTextConfiguration(results);
-            results.setText("Error saving file.");
+            UserInterface.errorTextConfiguration(messageLabel);
+            messageLabel.setText("Saved to " + filename);
+        } catch (IOException ex) {
+            UserInterface.errorTextConfiguration(messageLabel);
+            messageLabel.setText("Error saving file.");
         }
+    }
+
+    private void showErrorDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showInfoDialog(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

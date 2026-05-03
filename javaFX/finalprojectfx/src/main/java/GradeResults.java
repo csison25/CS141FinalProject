@@ -43,10 +43,10 @@ public class GradeResults {
     public String toString() {
         return
                 "For your " + className + " \"" + assignmentName + "\" " + assignmentType +
-                "\nYou need to get a(n): " + String.format("%.2f%%",grade) +
+                " you need to get a(n): " + String.format("%.2f%%",grade) +
                 "\nWhich is a(n): " + letterGrade +
-                "\nFor a final grade of: " + userWantedGrade +
-                "\nWith a percent weight of: " + String.format("%.2f%%",examWeight);
+                "\nFor a final grade of: " + userWantedGrade + "%" +
+                " with a percent weight of: " + String.format("%.2f%%",examWeight);
     }
 
     //method for formatting the output to be saved to a file
@@ -60,5 +60,30 @@ public class GradeResults {
                 " | Needed Grade: " + String.format("%.2f%%",grade) +
                 " | Letter Grade: " + letterGrade +
                 " | Target Grade: " + userWantedGrade;
+    }
+
+    // Static parser method to reconstruct GradeResults from pipe-delimited file format
+    public static GradeResults fromString(String fileLine) throws Exception {
+        try {
+            String[] parts = fileLine.split(" \\| ");
+            if (parts.length != 8) {
+                throw new Exception("Invalid format: expected 8 pipe-delimited fields");
+            }
+
+            // Parse each field, extracting the value after the colon
+            String className = parts[0].split(": ", 2)[1].trim();
+            String assignmentName = parts[1].split(": ", 2)[1].trim();
+            String assignmentType = parts[2].split(": ", 2)[1].trim();
+            double examWeight = Double.parseDouble(parts[3].split(": ", 2)[1].trim().replace("%", ""));
+            double userGrade = Double.parseDouble(parts[4].split(": ", 2)[1].trim().replace("%", ""));
+            double grade = Double.parseDouble(parts[5].split(": ", 2)[1].trim().replace("%", ""));
+            String letterGrade = parts[6].split(": ", 2)[1].trim();
+            int userWantedGrade = Integer.parseInt(parts[7].split(": ", 2)[1].trim());
+
+            return new GradeResults(className, assignmentName, assignmentType, userGrade,
+                    examWeight, userWantedGrade, grade, letterGrade);
+        } catch (Exception e) {
+            throw new Exception("Failed to parse GradeResults from file format: " + e.getMessage(), e);
+        }
     }
 }
