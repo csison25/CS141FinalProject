@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 public class FinalProject extends Application {
     private GradeResults record = null;//Creation of the GradeResults object 'record' ,
     public static void main(String[] args) {
-        launch();//launches the application
+        launch(args);//launches the application
     }
 
     @Override
