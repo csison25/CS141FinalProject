@@ -45,4 +45,4 @@ JavaFX/finalprojectfx/src/main/java
 JavaFX/finalprojectfx/  
 	- This is where the text files (.txt) will be saved to when you save something in the application 
 ## License:
-
+This project is licensed under the MIT license.
