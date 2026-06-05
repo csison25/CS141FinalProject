@@ -1,9 +1,8 @@
-/*
-    Class that holds the calculated information based off the user's input
-*/
-
+/**
+ * Holds calculated grade result details generated from user input.
+ */
 public class GradeResults {
-    //Class to create the Grade object
+    // Data fields for a calculated grade result
     private final String className;
     private final String assignmentName;
     private final String assignmentType;
@@ -13,7 +12,18 @@ public class GradeResults {
     private final double grade;
     private final String letterGrade;
 
-    //method that constructs the objects with the given values
+    /**
+     * Creates a GradeResults record from calculated values.
+     *
+     * @param className       the class name
+     * @param assignmentName  the assignment name
+     * @param assignmentType  the assignment type
+     * @param userGrade       the user's current grade
+     * @param examWeight      the assignment weight percentage
+     * @param userWantedGrade the desired final grade
+     * @param grade           the calculated needed grade
+     * @param letterGrade     the letter grade for the calculated value
+     */
     public GradeResults(
         final String className,
         final String assignmentName,
@@ -33,12 +43,19 @@ public class GradeResults {
             this.letterGrade = letterGrade;
     }
 
-    //accessor method for getting the className value
-    public String getClassName(){
+    /**
+     * accessor method for getting the className value
+     * @return className String object
+     */
+    public String getClassName() {
         return className;
     }
 
-    //method for formatting output to be displayed on the UI
+    /**
+     * Returns a multi-line string for UI display of this grade result.
+     *
+     * @return the formatted display string for this result
+     */
     @Override
     public String toString() {
         return
@@ -49,7 +66,11 @@ public class GradeResults {
                 " with a percent weight of: " + String.format("%.2f%%",examWeight);
     }
 
-    //method for formatting the output to be saved to a file
+    /**
+     * Formats this grade result for persistence to a text file.
+     *
+     * @return the file-format string for this result
+     */
     public String toFile() {
         return
                 "Class Type: " + className +
@@ -62,7 +83,13 @@ public class GradeResults {
                 " | Target Grade: " + userWantedGrade;
     }
 
-    // Static parser method to reconstruct GradeResults from pipe-delimited file format
+    /**
+     * Parses a GradeResults object from a single file line produced by {@link #toFile()}.
+     *
+     * @param fileLine a single line from the saved results file
+     * @return the parsed GradeResults instance
+     * @throws Exception if the line format is invalid
+     */
     public static GradeResults fromString(String fileLine) throws Exception {
         try {
             String[] parts = fileLine.split(" \\| ");

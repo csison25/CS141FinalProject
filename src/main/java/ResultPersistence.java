@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Utility class for result persistence operations.
- * Handles file I/O for deleting results and parsing existing result files.
+ * Utility class for file-based persistence of {@link GradeResults} records.
+ * Provides methods for deleting, parsing, and clearing result files.
  */
 public class ResultPersistence {
 
@@ -50,12 +50,12 @@ public class ResultPersistence {
     }
 
     /**
-     * Parses an existing result file and returns all GradeResults found in it.
-     * Skips malformed lines gracefully without throwing.
+     * Parses an existing result file and returns all valid GradeResults records.
+     * Malformed lines are skipped but do not stop processing.
      *
-     * @param filename The filename to read (e.g., "CS141.txt")
-     * @return List of GradeResults parsed from the file
-     * @throws Exception if file cannot be read
+     * @param filename the filename to read (for example, "CS141.txt")
+     * @return a list of parsed GradeResults
+     * @throws Exception if the file cannot be read
      */
     public static List<GradeResults> parseExistingResultsFile(String filename) throws Exception {
         try {
@@ -90,10 +90,10 @@ public class ResultPersistence {
     }
 
     /**
-     * Clears all results from a file by deleting it or truncating to empty.
+     * Deletes the file that stores results for the provided class name.
      *
-     * @param className The class name (used to derive filename)
-     * @throws Exception if file operation fails
+     * @param className the class name used to derive the filename
+     * @throws Exception if the file operation fails
      */
     public static void clearResultsFile(String className) throws Exception {
         try {

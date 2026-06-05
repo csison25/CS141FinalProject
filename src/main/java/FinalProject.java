@@ -28,16 +28,28 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+/**
+ * This class is the main class for running the program 
+ */
 public class FinalProject extends Application {
     private GradeResults record = null;
     private ObservableList<ResultItem> results;
     private ResultsListView resultsPanel;
     private Label messageLabel;
 
+    /**
+     * Launches the JavaFX application.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
         launch(args);
     }
 
+    /**
+     * Sets up the UI for the application 
+     * @param stage
+     */
     @Override
     public void start(Stage stage) {
         stage.getIcons().add(new Image(getClass().getResourceAsStream("/calculator.png")));
@@ -213,6 +225,13 @@ public class FinalProject extends Application {
         });
     }
 
+    /**
+     * Calculates the needed assignment grade based on validated user input and updates the UI label.
+     *
+     * @param userInput the validated user input values
+     * @param results   the label used to display the calculation result
+     * @return a GradeResults instance containing the computed values
+     */
     private static GradeResults performCalculation(Validate userInput, Label results) {
         if (!Validate.nullChecker(userInput, results)) {
             throw new IllegalArgumentException("Please fill all fields");
@@ -240,6 +259,12 @@ public class FinalProject extends Application {
         return myResults;
     }
 
+    /**
+     * Appends the current grade result to a text file based on the class name.
+     *
+     * @param record       the result record to persist
+     * @param messageLabel the UI label used to display save status
+     */
     private static void saveToFile(final GradeResults record, final Label messageLabel) {
         final String filename = record.getClassName() + ".txt";
         try {
@@ -257,6 +282,12 @@ public class FinalProject extends Application {
         }
     }
 
+    /**
+     * Displays an error dialog with the provided title and message.
+     *
+     * @param title   the dialog title
+     * @param message the error message to display
+     */
     private void showErrorDialog(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -265,6 +296,12 @@ public class FinalProject extends Application {
         alert.showAndWait();
     }
 
+    /**
+     * Displays an informational dialog with the provided title and message.
+     *
+     * @param title   the dialog title
+     * @param message the informational message to display
+     */
     private void showInfoDialog(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
