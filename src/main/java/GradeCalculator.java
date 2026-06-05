@@ -4,11 +4,11 @@
  * Provides grade calculation utilities and styling helpers for the UI.
  */
 public class GradeCalculator {
-    private final int A = 90;
-    private final int B = 80;
-    private final int C = 70;
-    private final int D = 60;
-    private final double dDecimal = 60.0;
+    private static final int A = 90;
+    private static final int B = 80;
+    private static final int C = 70;
+    private static final int D = 60;
+    private static final double dDecimal = 60.0;
 
     /**
      * Calculates the percent grade required on an assignment to reach the target final grade.
@@ -30,7 +30,7 @@ public class GradeCalculator {
      * @param percent the calculated assignment percentage
      * @return the corresponding letter grade
      */
-    public String letterCalc(final double percent) {
+    public static String letterCalc(final double percent) {
         final String letter;
         if (percent >= A) {
             letter = "A";
@@ -52,7 +52,7 @@ public class GradeCalculator {
      * @param percent the percentage used to determine styling
      * @return a CSS style string for label text color
      */
-    public String getPercentStyling(final double percent) {
+    public static String getPercentStyling(final double percent) {
         if (percent >= dDecimal) {
             return "-fx-text-fill: green;";
         } else {
