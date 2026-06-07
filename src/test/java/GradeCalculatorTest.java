@@ -1,6 +1,6 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class GradeCalculatorTest {
 
@@ -23,11 +23,14 @@ public class GradeCalculatorTest {
     }
     @Test
     void impossibleGradeThrowsException() {
-        assertThrows(
+        IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class,
                 () -> GradeCalculator.gradeCalc(50, 10, 100)
-    );
+        );
+        assertEquals("Not possible with current grade, will need over 100% on final.",
+                exception.getMessage());
     }
+
     @Test
     void calculateNeededGradeValidCase() {
         double result = GradeCalculator.gradeCalc(80, 50, 90);

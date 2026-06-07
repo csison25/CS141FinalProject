@@ -8,7 +8,7 @@ public class GradeCalculator {
     private static final int B = 80;
     private static final int C = 70;
     private static final int D = 60;
-    private static final double dDecimal = 60.0;
+    private static final double DDECIMAL = 60.0;
 
     /**
      * Calculates the percent grade required on an assignment to reach the target final grade.
@@ -53,7 +53,7 @@ public class GradeCalculator {
      * @return a CSS style string for label text color
      */
     public static String getPercentStyling(final double percent) {
-        if (percent >= dDecimal) {
+        if (percent >= DDECIMAL) {
             return "-fx-text-fill: green;";
         } else {
             return "-fx-text-fill: red;";
