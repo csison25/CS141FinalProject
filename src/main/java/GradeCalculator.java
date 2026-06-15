@@ -1,28 +1,44 @@
 
 
-/*
-Class that has the methods that deal with manipulating the user data, method that does the calculations
-*/
-
+/**
+ * Provides grade calculation utilities and styling helpers for the UI.
+ */
 public class GradeCalculator {
+    private static final int A = 90;
+    private static final int B = 80;
+    private static final int C = 70;
+    private static final int D = 60;
+    private static final double DDECIMAL = 60.0;
 
-    //method for calculating a needed grade on an assignment to achieve a desired final grade
-    public static double gradeCalc(final double current, final double weight, final int want){
+    /**
+     * Calculates the percent grade required on an assignment to reach the target final grade.
+     *
+     * @param current the user's current grade
+     * @param weight  the assignment weight percentage
+     * @param want    the desired final grade
+     * @return the needed grade percentage for the assignment
+     */
+    public static double gradeCalc(final double current, final double weight, final int want) {
         final double percentGrade = (want - ((1 - (weight / 100.0)) * current)) / (weight / 100.0);
         Validate.gradeRangeChecker(percentGrade);
         return percentGrade;
     }
 
-    //method for determining the letter grade associated to the calculated percentGrade from the method gradeCalc()
-    public static String letterCalc(final double percent){
+    /**
+     * Converts a numeric percentage into a letter grade.
+     *
+     * @param percent the calculated assignment percentage
+     * @return the corresponding letter grade
+     */
+    public static String letterCalc(final double percent) {
         final String letter;
-        if (percent >= 90) {
+        if (percent >= A) {
             letter = "A";
-        } else if (percent >= 80) {
+        } else if (percent >= B) {
             letter = "B" ;
-        } else if (percent >= 70) {
+        } else if (percent >= C) {
             letter = "C";
-        } else if (percent >= 60) {
+        } else if (percent >= D) {
             letter = "D" ;
         } else {
             letter = "F";
@@ -30,9 +46,14 @@ public class GradeCalculator {
         return letter;
     }
 
-    //method for styling (changing color) of the Label 'results', based on pass/fail
+    /**
+     * Returns a CSS text color style based on whether the percentage is a passing value.
+     *
+     * @param percent the percentage used to determine styling
+     * @return a CSS style string for label text color
+     */
     public static String getPercentStyling(final double percent) {
-        if (percent >= 60.0) {
+        if (percent >= DDECIMAL) {
             return "-fx-text-fill: green;";
         } else {
             return "-fx-text-fill: red;";

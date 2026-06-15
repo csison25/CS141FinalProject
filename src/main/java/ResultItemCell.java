@@ -10,6 +10,12 @@ import javafx.scene.layout.HBox;
  */
 public class ResultItemCell extends ListCell<ResultItem> {
 
+    /**
+     * Updates the cell content to display a {@link ResultItem} with a checkbox.
+     *
+     * @param item  the item for this cell
+     * @param empty whether the cell is empty
+     */
     @Override
     protected void updateItem(ResultItem item, boolean empty) {
         super.updateItem(item, empty);
